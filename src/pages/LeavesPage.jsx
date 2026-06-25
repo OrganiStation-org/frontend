@@ -77,8 +77,8 @@ function LeaveModal({ employee, onClose, onSaved }) {
 }
 
 export default function LeavesPage() {
-    const { user, hasPermission } = useAuth();
-    const isHR = hasPermission('hr:write');
+    const { user, hasPermission, hasRole } = useAuth();
+    const isHR = hasPermission('hr:write') || hasRole('PROJECT_MANAGER');
 
     const [employee, setEmployee] = useState(null);
     const [myLeaves, setMyLeaves] = useState([]);
@@ -138,7 +138,16 @@ export default function LeavesPage() {
                     <h1>Leaves & Time Off</h1>
                     <p>Apply for leaves, WFH and track your balance</p>
                 </div>
-                <button className="btn btn-primary" onClick={() => setModalOpen(true)}>
+                <button
+                    className="btn btn-primary"
+                    onClick={() => {
+                        if (!employee) {
+                            alert("No employee profile found matching your email (" + user.email + "). Please ensure an employee profile exists with your email in the HR tab.");
+                        } else {
+                            setModalOpen(true);
+                        }
+                    }}
+                >
                     <Plus size={16} /> Apply for Leave
                 </button>
             </div>
